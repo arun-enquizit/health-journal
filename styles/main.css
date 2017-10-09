@@ -54,7 +54,7 @@ main, #messages-card, #messages-card-for-doctors {
 #messages, #messages-for-doctors {
   overflow-y: auto;
   margin-bottom: 10px;
-  height: calc(100% - 80px);
+  height: calc(100% - 140px);
 }
 #message-filler, #message-filler-for-doctors {
   flex-grow: 1;
@@ -99,6 +99,26 @@ main, #messages-card, #messages-card-for-doctors {
   font-size: 12px;
   box-sizing: border-box;
 }
+
+.message-container .category {
+  display: inline-block;
+  width: 100%;
+  padding-left: 40px;
+  color: #441553;
+  font-style: bold;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.message-container .created_at {
+  display: inline-block;
+  width: 100%;
+  padding-left: 40px;
+  color: #bbb;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
 #message-form {
   display: flex;
   flex-direction: row;
@@ -117,6 +137,12 @@ main, #messages-card, #messages-card-for-doctors {
 #message-form button, #image-form button {
   width: 100px;
   margin: 15px 0 0 10px;
+}
+#filter-form {
+  #display: flex;
+  flex-direction: row;
+  #width: 10px;
+  #float: right;
 }
 .mdl-card {
   min-height: 0;

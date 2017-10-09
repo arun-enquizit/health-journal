@@ -30,6 +30,8 @@ function HealthJournal() {
   this.submitButton = document.getElementById('submit');
   this.submitImageButton = document.getElementById('submitImage');
   this.imageForm = document.getElementById('image-form');
+  this.filterForm = document.getElementById('filter-form');
+  this.filterInput = document.getElementById('filter');
   this.mediaCapture = document.getElementById('mediaCapture');
   this.userPic = document.getElementById('user-pic');
   this.userName = document.getElementById('user-name');
@@ -46,6 +48,9 @@ function HealthJournal() {
   var buttonTogglingHandler = this.toggleButton.bind(this);
   this.messageInput.addEventListener('keyup', buttonTogglingHandler);
   this.messageInput.addEventListener('change', buttonTogglingHandler);
+
+  // Event filter change
+  this.filterInput.addEventListener('change', this.filterMessage.bind(this));
 
   // Events for image upload.
   this.submitImageButton.addEventListener('click', function(e) {
@@ -195,6 +200,27 @@ HealthJournal.prototype.saveImageMessage = function(event) {
     }.bind(this)).catch(function(error) {
       console.error('There was an error uploading a file to Cloud Storage:', error);
     });
+  }
+};
+
+// Filter patient messages.
+HealthJournal.prototype.filterMessage = function(e) {
+  e.preventDefault();
+  // Check that the user entered a message and is signed in.
+  if (this.filterInput.value) {
+      var filterValue = this.filterInput.value;
+
+      // Filter messages by patient list
+      var children = this.messageList.childNodes;
+      children.forEach(function(item){
+        if (typeof item.getElementsByClassName == "function" && item.getElementsByClassName("name")[0]) {
+          if (item.getElementsByClassName("name")[0].innerHTML.toLowerCase() == filterValue.toLowerCase()) {
+                item.style.display = null;
+          } else {
+                item.style.display = "none";
+          }
+        }
+      });
   }
 };
 
