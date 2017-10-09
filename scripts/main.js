@@ -206,22 +206,24 @@ HealthJournal.prototype.saveImageMessage = function(event) {
 // Filter patient messages.
 HealthJournal.prototype.filterMessage = function(e) {
   e.preventDefault();
-  // Check that the user entered a message and is signed in.
-  if (this.filterInput.value) {
       var filterValue = this.filterInput.value;
 
       // Filter messages by patient list
       var children = this.messageList.childNodes;
-      children.forEach(function(item){
+      children.forEach(function(item) {
         if (typeof item.getElementsByClassName == "function" && item.getElementsByClassName("name")[0]) {
-          if (item.getElementsByClassName("name")[0].innerHTML.toLowerCase() == filterValue.toLowerCase()) {
+            // Check that the user entered a message and is signed in.
+            if (filterValue) {
+              if (item.getElementsByClassName("name")[0].innerHTML.toLowerCase() == filterValue.toLowerCase()) {
+                    item.style.display = null;
+              } else {
+                    item.style.display = "none";
+              }
+            } else {
                 item.style.display = null;
-          } else {
-                item.style.display = "none";
-          }
+            }
         }
       });
-  }
 };
 
 // Signs-in Friendly Chat.
