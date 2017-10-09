@@ -99,6 +99,26 @@ main, #messages-card, #messages-card-for-doctors {
   font-size: 12px;
   box-sizing: border-box;
 }
+
+.message-container .category {
+  display: inline-block;
+  width: 100%;
+  padding-left: 40px;
+  color: #441553;
+  font-style: bold;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.message-container .created_at {
+  display: inline-block;
+  width: 100%;
+  padding-left: 40px;
+  color: #bbb;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
 #message-form {
   display: flex;
   flex-direction: row;
