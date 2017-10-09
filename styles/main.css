@@ -17,7 +17,7 @@
 html, body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
 }
-main, #messages-card {
+main, #messages-card, #messages-card-for-doctors {
   height: 100%;
   padding-bottom: 0;
 }
@@ -25,7 +25,7 @@ main, #messages-card {
   height: calc(100% - 150px);
   padding-bottom: 0;
 }
-#messages-card {
+#messages-card, #messages-card-for-doctors {
   margin-top: 15px;
 }
 .mdl-layout__header-row span {
@@ -51,12 +51,12 @@ main, #messages-card {
   padding-top: 0;
   padding-bottom: 0;
 }
-#messages {
+#messages, #messages-for-doctors {
   overflow-y: auto;
   margin-bottom: 10px;
   height: calc(100% - 140px);
 }
-#message-filler {
+#message-filler, #message-filler-for-doctors {
   flex-grow: 1;
 }
 .message-container:first-of-type {
@@ -99,6 +99,26 @@ main, #messages-card {
   font-size: 12px;
   box-sizing: border-box;
 }
+
+.message-container .category {
+  display: inline-block;
+  width: 100%;
+  padding-left: 40px;
+  color: #441553;
+  font-style: bold;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.message-container .created_at {
+  display: inline-block;
+  width: 100%;
+  padding-left: 40px;
+  color: #bbb;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
 #message-form {
   display: flex;
   flex-direction: row;

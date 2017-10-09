@@ -83,10 +83,17 @@
           <form id="message-form" action="#">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
               <input class="mdl-textfield__input" type="text" id="message">
-              <label class="mdl-textfield__label" for="message">Message...</label>
+              <label class="mdl-textfield__label" for="message">Provide details to record</label>
+              <select id="category">
+                <option value="Excercise">Excercise</option>
+                <option value="Pain">Pain</option>
+                <option value="Food">Food</option>
+                <option value="Water">Water</option>
+                <option value="Medicine">Medicine</option>
+              </select>
             </div>
             <button id="submit" disabled type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-              Send
+              Record
             </button>
           </form>
           <form id="image-form" action="#">
@@ -107,6 +114,14 @@
       <div id="must-signin-snackbar" class="mdl-js-snackbar mdl-snackbar">
         <div class="mdl-snackbar__text"></div>
         <button class="mdl-snackbar__action" type="button"></button>
+      </div>
+
+      <div id="messages-card-for-doctors" class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--6-col-tablet mdl-cell--6-col-desktop">
+        <div class="mdl-card__supporting-text mdl-color-text--grey-600">
+          <div id="messages-for-doctors">
+            <span id="message-filler-for-doctors"></span>
+          </div>
+        </div>
       </div>
 
     </div>

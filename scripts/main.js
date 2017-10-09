@@ -19,10 +19,14 @@
 function HealthJournal() {
   this.checkSetup();
 
+  this.isDoctor = false;
+
   // Shortcuts to DOM Elements.
   this.messageList = document.getElementById('messages');
+  this.messageListForDoctors = document.getElementById('messages-for-doctors');
   this.messageForm = document.getElementById('message-form');
   this.messageInput = document.getElementById('message');
+  this.categoryInput = document.getElementById('category');
   this.submitButton = document.getElementById('submit');
   this.submitImageButton = document.getElementById('submitImage');
   this.imageForm = document.getElementById('image-form');
@@ -68,6 +72,39 @@ HealthJournal.prototype.initFirebase = function() {
   this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
 };
 
+// Checks the user permissions and then redirect to correct view
+HealthJournal.prototype.checkPermissions = function() {
+    var _this = this;
+
+    // Reference to the /user/ database path.
+    this.usersRef = this.database.ref('users');
+    // Make sure we remove all previous listeners.
+    this.usersRef.off();
+
+    // Loads the last 12 messages and listen for new ones.
+    // var setMessage = function(data) {
+    //     var val = data.val();
+    //     this.displayMessage(data.key, val.name, val.text, val.photoUrl, val.imageUrl);
+    // }.bind(this);
+    this.usersRef.once('value').then(function(user) {
+      var users = user.val();
+      var userKeys = Object.keys(users);
+      userKeys.forEach(function(userKey) {
+        if (users[userKey].email === _this.auth.currentUser.email) {
+          if (users[userKey].role === "patient") {
+              _this.isDoctor = false;
+              document.getElementById("messages-card-for-doctors").style.display = "none";
+              document.getElementById("messages-card").style.display = "block";
+          } else {
+              _this.isDoctor = true;
+              document.getElementById("messages-card-for-doctors").style.display = "block";
+              document.getElementById("messages-card").style.display = "none";
+          }
+        }
+      });
+    });
+};
+
 // Loads chat messages history and listens for upcoming ones.
 HealthJournal.prototype.loadMessages = function() {
   // Reference to the /messages/ database path.
@@ -78,7 +115,7 @@ HealthJournal.prototype.loadMessages = function() {
   // Loads the last 12 messages and listen for new ones.
   var setMessage = function(data) {
     var val = data.val();
-    this.displayMessage(data.key, val.name, val.text, val.photoUrl, val.imageUrl, val.category, val.created_at);
+    this.displayMessage(data.key, val.name, val.text, val.photoUrl, val.imageUrl, val.category, val.createdAt);
   }.bind(this);
   this.messagesRef.limitToLast(12).on('child_added', setMessage);
   this.messagesRef.limitToLast(12).on('child_changed', setMessage);
@@ -91,11 +128,15 @@ HealthJournal.prototype.saveMessage = function(e) {
   if (this.messageInput.value && this.checkSignedInWithMessage()) {
     var currentUser = this.auth.currentUser;
     // Add a new message entry to the Firebase Database.
-    this.messagesRef.push({
-      name: currentUser.displayName,
-      text: this.messageInput.value,
-      photoUrl: currentUser.photoURL || '/images/profile_placeholder.png'
-    }).then(function() {
+      var message = {
+          name: currentUser.displayName,
+          text: this.messageInput.value,
+          photoUrl: currentUser.photoURL || '/images/profile_placeholder.png',
+          category: this.categoryInput.value,
+          createdAt: firebase.database.ServerValue.TIMESTAMP
+      };
+      console.log(message);
+    this.messagesRef.push(message).then(function() {
       // Clear message text field and SEND button state.
       HealthJournal.resetMaterialTextfield(this.messageInput);
       this.toggleButton();
@@ -199,6 +240,7 @@ HealthJournal.prototype.signOut = function() {
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
 HealthJournal.prototype.onAuthStateChanged = function(user) {
   if (user) { // User is signed in!
+
     // Get profile pic and user's name from the Firebase user object.
     var profilePicUrl = user.photoURL;
     var userName = user.displayName;
@@ -214,6 +256,8 @@ HealthJournal.prototype.onAuthStateChanged = function(user) {
 
     // Hide sign-in button.
     this.signInButton.setAttribute('hidden', 'true');
+
+    this.checkPermissions();
 
     // We load currently existing chant messages.
     this.loadMessages();
@@ -303,14 +347,21 @@ HealthJournal.prototype.displayMessage = function(key, name, text, picUrl, image
     container.innerHTML = HealthJournal.MESSAGE_TEMPLATE;
     div = container.firstChild;
     div.setAttribute('id', key);
-    this.messageList.appendChild(div);
+
+    if (this.isDoctor) {
+      this.messageListForDoctors.appendChild(div);
+    } else {
+        this.messageList.appendChild(div);
+    }
   }
   if (picUrl) {
     div.querySelector('.pic').style.backgroundImage = 'url(' + picUrl + ')';
   }
   div.querySelector('.name').textContent = name;
   div.querySelector('.category').textContent = category;
-  div.querySelector('.created_at').textContent = created_at;
+  if (created_at) {
+      div.querySelector('.created_at').textContent = new Date(created_at);
+  }
   var messageElement = div.querySelector('.message');
   if (text) { // If the message is text.
     messageElement.textContent = text;
