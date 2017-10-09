@@ -23,6 +23,7 @@ function HealthJournal() {
   this.messageList = document.getElementById('messages');
   this.messageForm = document.getElementById('message-form');
   this.messageInput = document.getElementById('message');
+  this.categoryInput = document.getElementById('category');
   this.submitButton = document.getElementById('submit');
   this.submitImageButton = document.getElementById('submitImage');
   this.imageForm = document.getElementById('image-form');
@@ -89,7 +90,9 @@ HealthJournal.prototype.saveMessage = function(e) {
     this.messagesRef.push({
       name: currentUser.displayName,
       text: this.messageInput.value,
-      photoUrl: currentUser.photoURL || '/images/profile_placeholder.png'
+      photoUrl: currentUser.photoURL || '/images/profile_placeholder.png',
+      category: this.categoryInput.value,
+      created_at: new Date()
     }).then(function() {
       // Clear message text field and SEND button state.
       HealthJournal.resetMaterialTextfield(this.messageInput);
