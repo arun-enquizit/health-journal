@@ -1,6 +1,6 @@
 {
-  "name": "Friendly Chat",
-  "short_name": "Friendly Chat",
+  "name": "Health Journal",
+  "short_name": "Health Journal",
   "start_url": "/index.html",
   "display": "standalone",
   "orientation": "portrait",

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Friendly Chat",
+  "name": "Health Journal",
   "launch_path": "/index.html",
   "description": "Chat with friends using Firebase 2.0",
   "developer": {
@@ -15,7 +15,7 @@
   },
   "locales": {
     "en": {
-      "name": "Friendly Chat",
+      "name": "Health Journal",
       "description": "Chat with friends using Firebase 2.0"
     }
   }
