@@ -54,7 +54,7 @@ main, #messages-card {
 #messages {
   overflow-y: auto;
   margin-bottom: 10px;
-  height: calc(100% - 80px);
+  height: calc(100% - 140px);
 }
 #message-filler {
   flex-grow: 1;
@@ -117,6 +117,12 @@ main, #messages-card {
 #message-form button, #image-form button {
   width: 100px;
   margin: 15px 0 0 10px;
+}
+#filter-form {
+  #display: flex;
+  flex-direction: row;
+  #width: 10px;
+  #float: right;
 }
 .mdl-card {
   min-height: 0;
