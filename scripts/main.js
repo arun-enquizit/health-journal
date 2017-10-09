@@ -73,7 +73,7 @@ HealthJournal.prototype.loadMessages = function() {
   // Loads the last 12 messages and listen for new ones.
   var setMessage = function(data) {
     var val = data.val();
-    this.displayMessage(data.key, val.name, val.text, val.photoUrl, val.imageUrl);
+    this.displayMessage(data.key, val.name, val.text, val.photoUrl, val.imageUrl, val.category, val.created_at);
   }.bind(this);
   this.messagesRef.limitToLast(12).on('child_added', setMessage);
   this.messagesRef.limitToLast(12).on('child_changed', setMessage);
@@ -261,13 +261,15 @@ HealthJournal.MESSAGE_TEMPLATE =
       '<div class="spacing"><div class="pic"></div></div>' +
       '<div class="message"></div>' +
       '<div class="name"></div>' +
+      '<div class="category"></div>' +
+      '<div class="created_at"></div>' +
     '</div>';
 
 // A loading image URL.
 HealthJournal.LOADING_IMAGE_URL = 'https://www.google.com/images/spin-32.gif';
 
 // Displays a Message in the UI.
-HealthJournal.prototype.displayMessage = function(key, name, text, picUrl, imageUri) {
+HealthJournal.prototype.displayMessage = function(key, name, text, picUrl, imageUri, category, created_at) {
   var div = document.getElementById(key);
   // If an element for that message does not exists yet we create it.
   if (!div) {
@@ -281,6 +283,8 @@ HealthJournal.prototype.displayMessage = function(key, name, text, picUrl, image
     div.querySelector('.pic').style.backgroundImage = 'url(' + picUrl + ')';
   }
   div.querySelector('.name').textContent = name;
+  div.querySelector('.category').textContent = category;
+  div.querySelector('.created_at').textContent = created_at;
   var messageElement = div.querySelector('.message');
   if (text) { // If the message is text.
     messageElement.textContent = text;
