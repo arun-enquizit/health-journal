@@ -1,6 +1,6 @@
 # Health Journal
 
-This provides patient's with critical illness to be able to record their daily activities in Journal.
+This provides patient's with critical illness to be able to record their daily activities in an Electronic Journal.
 
 These activities can be shared with their doctors to provide more detailed diagnosis.
 
