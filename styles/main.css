@@ -119,7 +119,11 @@ main, #messages-card, #messages-card-for-doctors {
   box-sizing: border-box;
 }
 
-#message-form {
+.message-container .add-comment-form {
+  display: none;
+}
+
+#message-form, .add-comment-form {
   display: flex;
   flex-direction: row;
   width: calc(100% - 48px);
@@ -131,7 +135,7 @@ main, #messages-card, #messages-card-for-doctors {
   width: 48px;
   float: right;
 }
-#message-form .mdl-textfield {
+#message-form .mdl-textfield, .add-comment-form .mdl-textfield {
   width: calc(100% - 100px);
 }
 #message-form button, #image-form button {
@@ -222,4 +226,14 @@ main, #messages-card, #messages-card-for-doctors {
 .mdl-button .material-icons {
   top: -1px;
   margin-right: 5px;
+}
+
+.comments {
+  font-size: 0.9em;
+  color: grey;
+  padding-top: 1em;
+}
+
+.comments ul {
+  margin-top: 0.3em;
 }

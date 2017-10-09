@@ -115,7 +115,7 @@ HealthJournal.prototype.loadMessages = function() {
   // Loads the last 12 messages and listen for new ones.
   var setMessage = function(data) {
     var val = data.val();
-    this.displayMessage(data.key, val.name, val.text, val.photoUrl, val.imageUrl, val.category, val.createdAt);
+    this.displayMessage(data.key, val.name, val.text, val.photoUrl, val.imageUrl, val.category, val.createdAt, val.comments);
   }.bind(this);
   this.messagesRef.limitToLast(12).on('child_added', setMessage);
   this.messagesRef.limitToLast(12).on('child_changed', setMessage);
@@ -135,7 +135,6 @@ HealthJournal.prototype.saveMessage = function(e) {
           category: this.categoryInput.value,
           createdAt: firebase.database.ServerValue.TIMESTAMP
       };
-      console.log(message);
     this.messagesRef.push(message).then(function() {
       // Clear message text field and SEND button state.
       HealthJournal.resetMaterialTextfield(this.messageInput);
@@ -335,13 +334,14 @@ HealthJournal.MESSAGE_TEMPLATE =
       '<div class="name"></div>' +
       '<div class="category"></div>' +
       '<div class="created_at"></div>' +
+      '<div class="comments"></div>' +
     '</div>';
 
 // A loading image URL.
 HealthJournal.LOADING_IMAGE_URL = 'https://www.google.com/images/spin-32.gif';
 
 // Displays a Message in the UI.
-HealthJournal.prototype.displayMessage = function(key, name, text, picUrl, imageUri, category, created_at) {
+HealthJournal.prototype.displayMessage = function(key, name, text, picUrl, imageUri, category, created_at, comments) {
   var div = document.getElementById(key);
   // If an element for that message does not exists yet we create it.
   if (!div) {
@@ -351,6 +351,7 @@ HealthJournal.prototype.displayMessage = function(key, name, text, picUrl, image
     div.setAttribute('id', key);
 
     if (this.isDoctor) {
+      this.appendCommentForm(div, key);
       this.messageListForDoctors.appendChild(div);
     } else {
         this.messageList.appendChild(div);
@@ -378,10 +379,61 @@ HealthJournal.prototype.displayMessage = function(key, name, text, picUrl, image
     messageElement.innerHTML = '';
     messageElement.appendChild(image);
   }
+
+  if (comments && comments.length > 0) {
+      var commentsDiv = div.querySelector('.comments');
+      commentsDiv.innerHTML = "Comments";
+      var ul = document.createElement("ul");
+      comments.forEach(function(comment) {
+        var li = document.createElement("li");
+        li.innerHTML = comment;
+        ul.appendChild(li);
+      });
+      commentsDiv.appendChild(ul);
+      messageElement.appendChild(commentsDiv);
+  }
+
   // Show the card fading-in and scroll to view the new message.
   setTimeout(function() {div.classList.add('visible')}, 1);
   this.messageList.scrollTop = this.messageList.scrollHeight;
   this.messageInput.focus();
+};
+
+HealthJournal.prototype.appendCommentForm = function (div) {
+  var id = div.id;
+  var a = document.createElement('a');
+  var _this = this;
+  a.addEventListener("click", function() {
+    _this.addComment(id);
+  });
+  a.setAttribute("class", "add_comment");
+  a.innerHTML = "Add Comment";
+  div.appendChild(a);
+  var commentForm = document.createElement('form');
+  commentForm.id = id + "_comment_form";
+  commentForm.setAttribute("class", "add-comment-form");
+  commentForm.setAttribute("action", "#");
+  var inputField = document.createElement("input");
+  inputField.id = id + "_comment";
+  inputField.setAttribute("class", "mdl_textfield__input");
+  inputField.setAttribute("type", "text");
+  commentForm.appendChild(inputField);
+  var submitButton = document.createElement("button");
+  submitButton.id = id + "_comment_submit";
+  submitButton.setAttribute("class", "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect");
+  submitButton.innerHTML = "Add";
+  submitButton.addEventListener("click", function () {
+     _this.submitComment(id);
+  });
+  commentForm.appendChild(submitButton);
+  var clearButton = document.createElement("button");
+  clearButton.setAttribute("class", "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect");
+  clearButton.innerHTML = "Close";
+  clearButton.addEventListener("click", function() {
+    _this.clearComment(id);
+  });
+  commentForm.appendChild(clearButton);
+  div.appendChild(commentForm);
 };
 
 // Enables or disables the submit button depending on the values of the input
@@ -402,6 +454,40 @@ HealthJournal.prototype.checkSetup = function() {
         'sure you are running the codelab using `firebase serve`');
   }
 };
+
+HealthJournal.prototype.addComment = function(key) {
+  var divComment = document.getElementById(key + "_comment_form");
+  var commentField = document.getElementById(key + "_comment");
+  commentField.text = "";
+  divComment.style.display = "block";
+};
+
+HealthJournal.prototype.clearComment = function(key) {
+    var divComment = document.getElementById(key + "_comment_form");
+    var commentField = document.getElementById(key + "_comment");
+    commentField.text = "";
+    divComment.style.display = "none";
+};
+
+HealthJournal.prototype.submitComment = function(key) {
+    var divComment = document.getElementById(key + "_comment_form");
+    var comment = document.getElementById(key + "_comment").value;
+    var _this = this;
+
+    if (comment) {
+        this.database.ref("/messages/" + key).once('value').then(function(snap) {
+            var message = snap.val();
+            if (!message.comments) {
+                message.comments = [];
+            }
+            message.comments.push(comment);
+            _this.database.ref("/messages/" + key).update(message).then(function() {
+                divComment.style.display = "none";
+            });
+        });
+    }
+};
+
 
 window.onload = function() {
   window.healthJournal = new HealthJournal();
