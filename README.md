@@ -1,4 +1,12 @@
-# Firebase Web Codelab - Final code
+# Health Journal
+
+This provides patient's with critical illness to be able to record their daily activities in Journal.
+
+These activities can be shared with their doctors to provide more detailed diagnosis.
+
+Build with Firebase and other awesome Google Technologies
+
+*******************************************************************
 
 This folder contains the final code of the [Firebase Web Codelab](https://codelabs.developers.google.com/codelabs/firebase-web/).
 
