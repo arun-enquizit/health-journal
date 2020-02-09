@@ -105,6 +105,11 @@ HealthJournal.prototype.checkPermissions = function() {
     });
 };
 
+// key
+// google maps
+// api key
+// 0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx
+
 // Loads chat messages history and listens for upcoming ones.
 HealthJournal.prototype.loadMessages = function() {
   // Reference to the /messages/ database path.
